@@ -9,11 +9,11 @@ EMPA Workshop’a hoşgeldiniz, bu yazıda KafaKart üzerinde bulunan sensörler
 <br />
 KafaKart üzerinde bulunan sensörler başlatılmak için kendilerine özel yazılmış kütüphanelere ihtiyaç duymaktadır. Bu kütüphaneler proje içerisine eklendikten sonra çeşitli komutlar yardımıyla sensör başlatma ve okuma işlemleri gerçekleştirilecektir.
 
-Öncelikle bu [linkten](https://www.empa.com) KafaKart için gerekli olan klasörleri indiriniz.
+Öncelikle bu [linkten](https://www.empa.com) uygulamalar için gerekli olan klasörleri indiriniz.
 
 # Proje Dosyasının İçe Aktarılması
 
-Öncelikle indirdiğiniz klasörün içerisinde bulunan First Template isimli klasörün içerisinde bulunan EMPA_WORKSHOP_YTU klasörünün içerisine girin. Burada bulunan .project uzantılı dosyaya çift tıklayarak projeyi STM32CubeIDE içerisine aktarın. Örnek bir klasör görünümü aşağıda verilmiştir.
+Öncelikle indirdiğiniz klasörün içerisinde bulunan Template_Workshop isimli klasörün içerisinde bulunan EMPA_WORKSHOP_YTU klasörünün içerisine girin. Burada bulunan .project uzantılı dosyaya çift tıklayarak projeyi STM32CubeIDE içerisine aktarın. Örnek bir klasör görünümü aşağıda verilmiştir.
 
 <div align="center">
   <img width="100%" height="100%" src="Documents/files.png">
@@ -342,52 +342,9 @@ Bunu da yukarıdaki resimde gözüktüğü üzere Projeye sağ tıklayarak en al
 
 Sol taraftaki proje dosyasına sağ tıklayarak Build Project seçeneğine tıklayarak dosya derlenebilir. Aşağıdaki şekilde de gösterilmiştir.
 
-Bir sonraki uygulamamızda, ESP-C3-MINI geliştirme kartını kullanarak MQTT protokolü ile iletişim kuracağız. AT komutları aracılığıyla sıcaklık ve nem verilerini MQTT Broker'a ileteceğiz.
 
-Bu işlemi gerçekleştirmek için öncelikle common.h dosyasında bulunan //#define EMPA_MqttAws satırının yorum işaretini kaldırmamız gerekmektedir. Bunun için şu adımları izleyin:
 
-common.h dosyasını açın.
-//#define EMPA_MqttAws satırına gidin.
-Bu satırın başındaki yorum işaretini kaldırmak için Ctrl + 7 tuş kombinasyonunu kullanın.
-Yaptığınız değişiklikleri kaydetmek için Ctrl + S tuş kombinasyonunu kullanın. Aşağıda değiştirilecek yer gösterilmiştir.
-
-<div align="center">
-  <img width="100%" height="100%" src="Documents/mqtt_aws.png">
-</div>
-<br />
-
-Ardından main.c içerisinde 
-```c
-//  Private Variables Start
-
-//  Private Variables End
-```
-yorum satırları arasına
-```c
-#ifdef EMPA_MqttAws
-char DEVICE_ID[] = "";
-#endif
-```
-satırları eklenir ve DEVICE_ID içerisine masa numarası yazılır.
-
-Önceki uygulamamızda eklemiş olduğumuz 
-```c
-EMPA_SensorProcess();
-EMPA_SensorPrint();
-```
-satırlarını seçip Ctrl + 7 tuş kombinasyonuyla yorum satırı haline getirin ya da tamamen silin.
-
-Ardından 
-```c
-//  MQTT Section Start
-
-//  MQTT Section End
-```
-yorum satırları arasına  ``` MY_MqttAwsProcess(); ``` fonksiyonu eklenir.
-
-Ve böylece kodumuz tamamlanmış olur. Kodumuzu derleyip kart içerisine gömebilirsiniz. 
-MQTT bağlantısı tamamlandığında, kartımızın üzerindeki LED'in yandığını göreceksiniz. Ayrıca, MQTT üzerinden HiveMQ'ya bir mesaj gönderdiğimizde veya bir mesaj aldığımızda, LED'ler bu durumu gösterecek şekilde yanacaktır. Bu sayede, LED'ler aracılığıyla bağlantı ve mesaj durumlarından haberdar olmanız sağlanacaktır.
-
+# DATA COLLECTOR UYGULAMASI
 
 Ardından, sıradaki uygulamamız olan NanoEdge AI Studio için verileri UART üzerinden gönderme işlemine geçebiliriz.
 
@@ -411,10 +368,13 @@ uint8_t Flag_DataCollector = 0;
 yerleştirilir.
 ```
 Ve ardından daha önceki uygulamamızda eklemiş olduğumuz 
+
+
 ```c
- MY_MqttAwsProcess(); 
+ 	EMPA_SensorProcess();
+	EMPA_SensorPrint();
  ```
-  fonksiyonunu seçip yorum satırı haline getirin ya da tamamen silin.
+  fonksiyonlarını seçip yorum satırı haline getirin ya da tamamen silin.
 
 Ardından 
 ```c
@@ -434,6 +394,53 @@ Kartın en üstündeki LED'den başlayarak aşağıya doğru sırasıyla İvmeö
 
 Bu uygulamanın amacı, toplanan veriler ile dataset oluşturmaktır. Buradan sonra elimizdeki dataset ile ne yapılabileceği anlatılacaktır.
 
+# MQTT UYGULAMASI
+
+Bir sonraki uygulamamızda, ESP32-C3-MINI geliştirme kartını kullanarak MQTT protokolü ile iletişim kuracağız. AT komutları aracılığıyla sıcaklık ve nem verilerini MQTT Broker'a ileteceğiz.
+
+Bu işlemi gerçekleştirmek için öncelikle common.h dosyasında bulunan<br /> ```//#define EMPA_MqttAws``` satırının yorum işaretini kaldırmamız gerekmektedir. Bunun için şu adımları izleyin:
+
+common.h dosyasını açın.
+//#define EMPA_MqttAws satırına gidin.
+Bu satırın başındaki yorum işaretini kaldırmak için Ctrl + 7 tuş kombinasyonunu kullanın.
+Yaptığınız değişiklikleri kaydetmek için Ctrl + S tuş kombinasyonunu kullanın. Aşağıda değiştirilecek yer gösterilmiştir.
+
+<div align="center">
+  <img width="100%" height="100%" src="Documents/mqtt_aws.png">
+</div>
+<br />
+
+Ardından main.c içerisinde 
+```c
+//  Private Variables Start
+
+//  Private Variables End
+```
+yorum satırları arasına
+```c
+#ifdef EMPA_MqttAws
+char DEVICE_ID[] = "";
+#endif
+```
+satırları eklenir ve DEVICE_ID içerisine kullanıcı adı yazılır.
+
+Önceki uygulamamızda eklemiş olduğumuz 
+```c
+EMPA_DataCollectorProcess();
+```
+satırını seçip Ctrl + 7 tuş kombinasyonuyla yorum satırı haline getirin ya da tamamen silin.
+
+Ardından 
+```c
+//  MQTT Section Start
+
+//  MQTT Section End
+```
+yorum satırları arasına  ``` MY_MqttAwsProcess(); ``` fonksiyonu eklenir.
+
+Ve böylece kodumuz tamamlanmış olur. Kodumuzu derleyip kart içerisine gömebilirsiniz. 
+MQTT bağlantısı tamamlandığında, kartımızın üzerindeki LED'in yandığını göreceksiniz. Ayrıca, MQTT üzerinden HiveMQ'ya bir mesaj gönderdiğimizde veya bir mesaj aldığımızda, LED'ler bu durumu gösterecek şekilde yanacaktır. Bu sayede, LED'ler aracılığıyla bağlantı ve mesaj durumlarından haberdar olmanız sağlanacaktır.
+
 # CubeAI ile Oluştulan Modelin Cihazda Testi
 Bu bölümde devam ettiğimiz projeye bir ara verip CubeAI için ayrı bir proje açacağız. Bunun için tekrardan size vermiş olduğumuz ioc dosyası ile proje oluşturabiliriz.
 
@@ -441,12 +448,113 @@ Bu bölümde devam ettiğimiz projeye bir ara verip CubeAI için ayrı bir proje
 
 # NanoEdge AI Studio Çıktılarının Koda Eklenmesi
 
+Öncelikle NanoEdge AI Studio uygulamamız için yeni bir proje açacağız. Bunu da size verilen dosyalar içerisindeki Template_Workshop içerisindeki .ioc uzantılı dosyaya çift tıklayınız.
+Ardından STM32CubeMX 6.11.1 programı açılacaktır. Açılan program içerisinde gerekli ayarlar yapılmıştır.
+<div align="center">
+  <img width="100%" height="100%" src="Documents/cubemx_template.png">
+</div>
+<br />
+Yukarıdaki şekilde de gözüken GENARATE CODE seçeneğine tıklanır. Çıkan soruya evet yanıtı verilir. CubeMX programı tarafından kod oluşturma işlemi tamamlandığında Open Project seçilir. 
+Ve ardından STM32CubeIDE programı içerisinde main.c dosyasına geçilir.<br />
+<br />
+Burada AI modelinin koda eklenmesinden önce anlık olarak sensör verilerini elde etmek için ISM330IS'ten verileri alabilmemiz gerekir. Bunun için sensor_process fonksiyonlarını eklememiz gerekir.<br />
+
+Öncelikle 
+```c
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
+```
+yorum satırları arasına 
+```c
+#include "ism330is.h"
+#include "custom_bus.h"
+```
+yukarıdaki kütüphaneler eklenir.
+
+Ardından 
+```c
+/* USER CODE BEGIN PV */
+
+/* USER CODE END PV */
+```
+yorum satırları arasına 
+```c
+ISM330IS_Object_t ism330_obj_o;
+ISM330IS_IO_t ism330_ctx;
+uint8_t ism330_id;
+ISM330IS_Capabilities_t ism330_cap;
+
+typedef struct {
+	int32_t x;
+	int32_t y;
+	int32_t z;
+} acc;
+
+typedef struct {
+	int32_t x;
+	int32_t y;
+	int32_t z;
+} gyro;
+
+typedef struct {
+	acc acc;
+	gyro gyro;
+} imu_data;
+imu_data imu_sensor_data;
+```
+yukarıdaki kod satırları eklenir.
+
+Sonrasında 
+```c
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */ 
+```
+yukarıdaki yorum satırları arasına 
+```c
+#ifdef __GNUC__
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif
+
+PUTCHAR_PROTOTYPE {
+	HAL_UART_Transmit(&huart1, (uint8_t*) &ch, 1, HAL_MAX_DELAY);
+	return ch;
+}
+uint8_t ism330_sensor_init(void);
+uint8_t ism330_sensor_process(imu_data *sensor_data);
+```
+yukarıdaki kod satırları eklenir.
+
+Ve 
+```c
+	/* USER CODE BEGIN 2 */
+
+	/* USER CODE END 2 */
+```
+yukarıdaki yorum satırları arasına 
+  ```c
+  ism330_sensor_init();
+  ``` 
+  fonksiyonu eklenir. Böylece sensörden veri alabilecek seviyeye gelmiş oluruz.
+
+  Float değişkenlerin yazdırılabilmesi için proje ayarlarından "Use float with printf from newlib-nano (-u _print_float)  seçeneğinin seçilmesi gerekir.
+  <div align="center">
+  <img width="100%" height="100%" src="Documents/float.png">
+</div>
+<br />
+
+  Bunu da yukarıdaki resimde gözüktüğü üzere Projeye sağ tıklayarak en altta bulunan Properties seçeneğini seçtikten sonra C/C++ Build->Settings->MCU Settings kısmından gerçekleştirebilirsiniz.
+
+
 NanoEdge AI Studio ile hazırlanan .a ve .h dosya uzantılı model dosyalarının koda eklenmesi için öncelikle knowledge.h ve NanoEdgeAI.h dosyalarının Core->Inc klasörüne eklenmesi gereklidir.
 Ardından libneai.a dosyasını da Core->Src klasörüne kopyalamamız gereklidir. 
 
 Dosyalar aşağıdaki gibi eklenmiştir. 
 <div align="center">
-  <img width="100%" height="100%" src="Documents/after_adding_a_h_files.png">
+  <img width="100%" height="100%" src="Documents/after_adding_library.png">
 </div>
 <br />
 
@@ -482,12 +590,29 @@ Ardından yukarıdaki şekildeki gözüken şekilde libneai.a dosyası seçilir.
 Ok, Ok ve Apply and Close seçilir ve ekleme işlemi tamamlanmış olur. 
 
 Ardından 
-```c
-// NanoEdge AI Studio Private Variable Start
 
-//	NanoEdge AI Studio Private Variable End
+```c
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
 ```
 yorum satırları arasına 
+```c
+#include "knowledge.h"
+#include "NanoEdgeAI.h"
+```
+yukarıdaki kütüphaneler eklenir.
+
+
+```c
+
+Ve ardından 
+/* USER CODE BEGIN PV */
+
+/* USER CODE END PV */
+```
+yorum satırları arasına 
+
 ```c
 uint16_t id_class = 0; // Sınıf kimliğini tutar
 float input_user_buffer[DATA_INPUT_USER * AXIS_NUMBER]; // Giriş sinyalleri tamponu
@@ -498,18 +623,15 @@ const char *id2class[CLASS_NUMBER + 1] = { // Sınıf kimliğini sınıf adları
     "data_kosma",
     "data_durma",
 };
-extern imu_data imu_sensor_data;
 ```
-yukarıdaki kod satırlarını ekleyin. Ayrıca common.h dosyası içerisinde 
-```#define EMPA_DataCollector``` satırını yorum satırı haline getirin ve dosyayı kaydedin.
-
-Ardından 
+yukarıdaki kod satırlarını ekleyin.
+Ardından  
 ```c
-//	NanoEdge AI Studio Init Start
+ /* USER CODE BEGIN 2 */
 
-//	NanoEdge AI Studio Init End
+  /* USER CODE END 2 */
 ```
-yorum satırları arasına 
+yorum satırlarının arasına 
 ```c
     enum neai_state state = neai_classification_init(knowledge);
     if (state != NEAI_OK) {
@@ -518,19 +640,11 @@ yorum satırları arasına
     }
 ```
 yukarıdaki kod satırlarını ekleyin. <br />
-Ardından DataCollector bölümünde eklemiş olduğumuz 
-```EMPA_DataCollectorProcess();``` fonksiyonunu yorum satırı haline getirin ya da tamamen silin.
 
-Ve 
-```c
-//	NanoEdgeAIStudio Section Start
-
-//	NanoEdgeAIStudio Section End
-```
-yorum satırları arasına 
+Ve ardından while(1) içerisinde 
 ```c
 	    for (int i = 0; i < DATA_INPUT_USER ; i++) {
-	    	 EMPA_SensorProcess();
+	    	ism330_sensor_process(&imu_sensor_data);
 	        input_user_buffer[AXIS_NUMBER*i] = (float)imu_sensor_data.acc.x; 
 	        input_user_buffer[AXIS_NUMBER*i+1] = (float)imu_sensor_data.acc.y;
 	        input_user_buffer[AXIS_NUMBER*i+2] = (float)imu_sensor_data.acc.z;
@@ -545,6 +659,7 @@ yorum satırları arasına
 
 		if (state == NEAI_OK) {
 			printf("Classified as: %s\n", id2class[id_class]);
+			
 			printf("Class probabilities:\n");
 			for (int i = 0; i < CLASS_NUMBER; i++) {
 				printf("Class %s: %.2f%%\n", id2class[i + 1],
@@ -556,6 +671,7 @@ yorum satırları arasına
 		}
 ```
 yukarıdaki kod satırlarını ekleyin. Yukarıdaki kod satırlarıyla beraber anlık olarak ivmeölçer ve jiroskop verileriyle durma, yürüme ve koşma aktivitelerinin sınıflandırılması gerçekleştirilip seri terminal aracılığıyla sınıflandırma sonucu gözlemlenecektir.
+Ay
 
 Örnek olarak aşağıda terminaldeki sınıflandırma sonuçlarını gözlemleyebilirsiniz.
 <div align="center">
