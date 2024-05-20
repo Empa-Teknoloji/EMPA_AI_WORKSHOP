@@ -44,7 +44,7 @@ Kesme pinleri aşağıdaki gibidir:
 
 Sensörlerin kesme pinlerini ve mikrodenetleyicinin hangi pinlerine bağlandıklarını kartın şematiği üzerinden de görebilirsiniz. Şematiğe aşağıdan ulaşabilirsiniz:
 
-[Şematik](https://empa.com)
+[Şematik](https://www.empadigital.com/shared/XMtC6ssfRK)
 <br />
 <div align="center">
   <img width="100%" height="100%" src="Documents/interrupt_falling_edge.png">
