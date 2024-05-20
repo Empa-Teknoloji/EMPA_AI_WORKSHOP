@@ -434,7 +434,10 @@ Kartın en üstündeki LED'den başlayarak aşağıya doğru sırasıyla İvmeö
 
 Bu uygulamanın amacı, toplanan veriler ile dataset oluşturmaktır. Buradan sonra elimizdeki dataset ile ne yapılabileceği anlatılacaktır.
 
-# CubeAI ile Oluştulan Modeli   
+# CubeAI ile Oluştulan Modelin Cihazda Testi
+Bu bölümde devam ettiğimiz projeye bir ara verip CubeAI için ayrı bir proje açacağız. Bunun için tekrardan size vermiş olduğumuz ioc dosyası ile proje oluşturabiliriz.
+
+
 
 # NanoEdge AI Studio Çıktılarının Koda Eklenmesi
 
