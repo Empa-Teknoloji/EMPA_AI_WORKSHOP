@@ -9,7 +9,7 @@ EMPA Workshop’a hoşgeldiniz, bu yazıda kartımız üzerinde bulunan sensörl
 <br />
 Kartımız üzerinde bulunan sensörler başlatılmak için kendilerine özel yazılmış kütüphanelere ihtiyaç duymaktadır. Bu kütüphaneler proje içerisine eklendikten sonra çeşitli komutlar yardımıyla sensör başlatma ve okuma işlemleri gerçekleştirilecektir.
 
-Öncelikle bu [linkten](https://www.empa.com) uygulamalar için gerekli olan klasörleri indiriniz.
+Öncelikle bu [linkten](https://www.empadigital.com/shared/XMtC6ssfRK) uygulamalar için gerekli olan klasörleri indiriniz.
 
 # Proje Dosyasının İçe Aktarılması
 
