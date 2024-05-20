@@ -2,12 +2,12 @@
 
 # EMPA University Workshop
 
-EMPA Workshop’a hoşgeldiniz, bu yazıda KafaKart üzerinde bulunan sensörlerin nasıl kullanılacağı, MQTT Broker'a bağlanıp veri atmayı ve veri almayı ve NanoEdge AI Studio ile Yapay Zeka uygulamalarının nasıl kolayca mikrodenetleyiciyle gerçekleştirileceği anlatılacaktır. Lütfen önceki yazımızdaki ( EMPA Workshop’a gelmeden önce yapılacaklar) talimatlarını eksiksiz yaptığınızdan emin olunuz.
+EMPA Workshop’a hoşgeldiniz, bu yazıda kartımız üzerinde bulunan sensörlerin nasıl kullanılacağı, MQTT Broker'a bağlanıp veri atmayı ve veri almayı ve NanoEdge AI Studio ile Yapay Zeka uygulamalarının nasıl kolayca mikrodenetleyiciyle gerçekleştirileceği anlatılacaktır. Lütfen önceki yazımızdaki ( EMPA Workshop’a gelmeden önce yapılacaklar) talimatlarını eksiksiz yaptığınızdan emin olunuz.
 
 # Proje Dosyasının İçe Aktarılması ve Gerekli Kütüphanelerin Yüklenmesi
 
 <br />
-KafaKart üzerinde bulunan sensörler başlatılmak için kendilerine özel yazılmış kütüphanelere ihtiyaç duymaktadır. Bu kütüphaneler proje içerisine eklendikten sonra çeşitli komutlar yardımıyla sensör başlatma ve okuma işlemleri gerçekleştirilecektir.
+Kartımız üzerinde bulunan sensörler başlatılmak için kendilerine özel yazılmış kütüphanelere ihtiyaç duymaktadır. Bu kütüphaneler proje içerisine eklendikten sonra çeşitli komutlar yardımıyla sensör başlatma ve okuma işlemleri gerçekleştirilecektir.
 
 Öncelikle bu [linkten](https://www.empa.com) uygulamalar için gerekli olan klasörleri indiriniz.
 
@@ -360,13 +360,15 @@ Ardından main.c içerisinde
 
 //  Private Variables End
 ```
-```c
 yorum satırları arasına 
+```c
+
 #ifdef EMPA_DataCollector
 uint8_t Flag_DataCollector = 0;
 #endif
-yerleştirilir.
+
 ```
+yerleştirilir.
 Ve ardından daha önceki uygulamamızda eklemiş olduğumuz 
 
 
@@ -378,9 +380,9 @@ Ve ardından daha önceki uygulamamızda eklemiş olduğumuz
 
 Ardından 
 ```c
-//	NanoEdgeAIStudio Section Start
+//	Data Collector Progress Start
 
-//	NanoEdgeAIStudio Section End
+//	Data Collector Progress End
 ```
 yorum satırı arasına 
 ```c
@@ -397,6 +399,114 @@ Bu uygulamanın amacı, toplanan veriler ile dataset oluşturmaktır. Buradan so
 # MQTT UYGULAMASI
 
 Bir sonraki uygulamamızda, ESP32-C3-MINI geliştirme kartını kullanarak MQTT protokolü ile iletişim kuracağız. AT komutları aracılığıyla sıcaklık ve nem verilerini MQTT Broker'a ileteceğiz.
+
+# ESP32 MQTT Kurulumu
+
+Örneğimizde ESP32-C3 modülümüzü wifi modülü olarak kullanacağız. Bunun için AT firmware'i ESP32-C3'ün flash'ına kaydetmemiz gerekiyor (Biz sizin için kaydettik :blush: Kendiniz de yapmak isterseniz bu [rehberi](https://docs.espressif.com/projects/esp-at/en/latest/esp32c3/Get_Started/index.html) kullanabilirsiniz.)
+
+MQTT bağlantısı için ESP32'yi internete bağlayıp sonrasında MQTT bağlantısını gerçekleştirmemiz gerekiyor. Bunun için aşağıdaki komutları gönderip dönüşlerinin başarılı olup olmadığını kontrol etmemiz gerekiyor.
+
+##### Gerekli AT Komutları 
+
+* Komut: ```AT+RST```
+:arrow_right_hook: ```OK```
+Tanım: Modülü Yeniden Başlatır
+<br />
+
+* Komut: ```AT+CWMODE=1```
+:arrow_right_hook: ```OK```
+Tanım: Wi-Fi modunu ayarlayın (İstasyon/SoftAP/İstasyon+SoftAP).
+<br />
+
+* Komut: ```AT+CWJAP="EMPA_Guest",Gst@Emp2023!!```
+:arrow_right_hook: ```WIFI CONNECTED WIFI GOT IP OK ```
+Tanım: Wifi'ya bağlanın.
+<br />
+
+* Komut: ```AT+CIPSNTPCFG=1,3,"pool.ntp.org"```
+:arrow_right_hook: ```OK```
+Tanım: Saat dilimini ve SNTP sunucusunu sorgulayın/ayarlayın.
+<br />
+
+* Komut: ```AT+CIPSNTPTIME?```
+:arrow_right_hook: ```+CIPSNTPTIME:Tue May 14 14:22:33 2024 OK```
+Tanım: SNTP zamanını sorgulayın.
+<br />
+
+* Komut: ```AT+MQTTUSERCFG=0,2,"","","",0,0,""```
+:arrow_right_hook: ```OK ```
+Tanım: MQTT kullanıcı yapılandırmasını ayarlayın
+<br />
+
+* Komut: ```AT+MQTTCONN=0,"a29nabc30lu54k-ats.iot.us-east-1.amazonaws.com",8883,1```
+:arrow_right_hook: ```+MQTTCONNECTED:0,5,"a29nabc30lu54k-ats.iot.eu-west-1.amazonaws.com","8883","",1 ```
+Tanım: MQTT Brokerlarına bağlanın
+<br />
+
+* Komut: ```AT+MQTTCONN?```
+:arrow_right_hook: ```+MQTTCONN:0,4,5,"a29nabc30lu54k-ats.iot.eu-west-1.amazonaws.com","8883","",1 ```
+Tanım: ESP32'nin bağlı olduğu MQTT aracısını sorgulayın
+<br />
+
+* Komut: ```AT+MQTTSUB=0,"EMPA_SUB",1```
+:arrow_right_hook: ```OK ```
+Tanım: MQTT konularına abone olun
+<br />
+
+* Komut: ```AT+MQTTPUBRAW=0,"EMPA_PUB",4,0,0```
+:arrow_right_hook: ```OK >```
+Cevap komutundan sonra gönderilecek data: ```"data"```
+:arrow_right_hook: ```+MQTTPUB:OK```
+Tanım:Uzun MQTT mesajlarını yayınlayın
+
+##### Not : 
+Bütün AT komutlarına bu [link](https://docs.espressif.com/projects/esp-at/en/latest/esp32c3/AT_Command_Set/index.html) üzerinden bakabilirsiniz.
+
+<br />
+
+##### Konfigürasyonların Kod İçinde Yapılması
+Proje klasörü içindeki app_esp32_mqtt_aws.c dosyasında bulunan mqttConfig struct'ını kendi ayarlarınıza göre güncelleyiniz. 
+
+```
+/***********START Configurations************/
+MQTT_Config mqttConfig = {
+    .mqttPacketBuffer = mqttPacketBuffer,
+    .mode_wifi = STATION_MODE,
+    .OSC_enable = SC_DISABLE,
+    .wifiID = "mywifi",
+    .wifiPassword = "mypassword!!",
+    .timezone = 3,
+    .mode_mqtt = MQTT_TLS_1,
+    .clientID = "",
+    .username = "myusername",
+    .mqttPassword = "mypassword",
+    .keepAlive = 300,
+    .cleanSession = CLS_1,
+    .qos = QOS_0,
+    .retain = RTN_0,
+    .brokerAddress = "70a79e332abc4fd2a972c9fccbdedb79.s1.eu.hivemq.cloud",
+    .reconnect = 0,
+    .subtopic = "",
+	.pubtopic = ""
+};
+/***********END Configurations************/
+```
+<br />
+
+Uygulamamız için değiştirmeniz gereken yerler:
+```
+    .wifiID = "mywifi",
+    .wifiPassword = "mypassword!!",
+    .username = "myusername",
+    .mqttPassword = "mypassword",
+    .brokerAddress = "70a79e332abc4fd2a972c9fccbdedb79.s1.eu.hivemq.cloud",
+	.subtopic = "",
+	.pubtopic = ""
+```
+
+
+
+
 
 Bu işlemi gerçekleştirmek için öncelikle common.h dosyasında bulunan<br /> ```//#define EMPA_MqttAws``` satırının yorum işaretini kaldırmamız gerekmektedir. Bunun için şu adımları izleyin:
 
@@ -448,13 +558,19 @@ Bu bölümde devam ettiğimiz projeye bir ara verip CubeAI için ayrı bir proje
 
 # NanoEdge AI Studio Çıktılarının Koda Eklenmesi
 
-Öncelikle NanoEdge AI Studio uygulamamız için yeni bir proje açacağız. Bunu da size verilen dosyalar içerisindeki Template_Workshop içerisindeki .ioc uzantılı dosyaya çift tıklayınız.
-Ardından STM32CubeMX 6.11.1 programı açılacaktır. Açılan program içerisinde gerekli ayarlar yapılmıştır.
+Öncelikle NanoEdge AI Studio uygulamamız için yeni bir proje açacağız. Bunu da STM32CubeIDE içerisinde File->New->STM32 Project from an Existing STM32CubeMX Configuration File (.ioc)'a tıklayın. 
 <div align="center">
-  <img width="100%" height="100%" src="Documents/cubemx_template.png">
+  <img width="100%" height="100%" src="Documents/project_cubemx.png">
 </div>
 <br />
-Yukarıdaki şekilde de gözüken GENARATE CODE seçeneğine tıklanır. Çıkan soruya evet yanıtı verilir. CubeMX programı tarafından kod oluşturma işlemi tamamlandığında Open Project seçilir. 
+
+Ve ardından aşağıda gözüktüğü üzere indirmiş olduğunuz klasördeki EMPA_WORKSHOP_YTU.ioc dosyasını seçin ve ilerleyerek işlemi tamamlayın. 
+<div align="center">
+  <img width="100%" height="100%" src="Documents/ioc_file_select.png">
+</div>
+<br />
+Burada .ioc dosyası içerisinde herhangi bir değişikllik yapmamıza gerek yoktur.
+
 Ve ardından STM32CubeIDE programı içerisinde main.c dosyasına geçilir.<br />
 <br />
 Burada AI modelinin koda eklenmesinden önce anlık olarak sensör verilerini elde etmek için ISM330IS'ten verileri alabilmemiz gerekir. Bunun için sensor_process fonksiyonlarını eklememiz gerekir.<br />
