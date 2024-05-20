@@ -51,7 +51,7 @@ Sensörlerin kesme pinlerini ve mikrodenetleyicinin hangi pinlerine bağlandıkl
 </div>
 <br />
 
-İsimlendirmelerini tamamladığımız kesme pinlerinin yükselen kenar ya da düşen kenarda olacağını şekilde görüldüğü üzere System Core->GPIO altında her bir kesme pinine tıklayarak GPIO mode seçeneğinden  seçilebilir. ISM330 kesmeleri ve buton kesmeleri şekilde görüldüğü üzere External Interrupt Mode with Rising edge trigger detection olarak seçilmiştir. Bu sayede düşen kenarda kesmeleri algılayabiliriz.
+İsimlendirmelerini tamamladığımız kesme pinlerinin yükselen kenar ya da düşen kenarda olacağını şekilde görüldüğü üzere System Core->GPIO altında her bir kesme pinine tıklayarak GPIO mode seçeneğinden  seçilebilir. Buton kesmesi şekilde görüldüğü üzere External Interrupt Mode with Falling edge trigger detection olarak seçilmiştir. Bu sayede düşen kenarda kesmeleri algılayabiliriz.
 
 <br />
 <br />
