@@ -1056,7 +1056,7 @@ Ve ardından while(1) içerisinde
 		}
 ```
 yukarıdaki kod satırlarını ekleyin. Yukarıdaki kod satırlarıyla beraber anlık olarak ivmeölçer ve jiroskop verileriyle durma, yürüme ve koşma aktivitelerinin sınıflandırılması gerçekleştirilip seri terminal aracılığıyla sınıflandırma sonucu gözlemlenecektir.
-Ay
+
 
 Örnek olarak aşağıda terminaldeki sınıflandırma sonuçlarını gözlemleyebilirsiniz.
 <div align="center">
