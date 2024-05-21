@@ -44,9 +44,9 @@ Bu aşamadan sonra main.c dosyasının içerisine girerek işlemlerimizi yürüt
 
 Öncelikle
 ```c
-//  Library Include Start
+//	Sensor Includes Start
 
-//  Sensor Library Include End
+//	Sensor Includes End
 ```
 satırları arasına 
 ```c
