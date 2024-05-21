@@ -135,13 +135,15 @@ int main(void)
 
 //	Sensor Section End
 
+//	Data Collector Progress Start
+
+//	Data Collector Progress End
+
 //	MQTT Section Start
 
 //	MQTT Section End
 
-//	Data Collector Progress Start
 
-//	Data Collector Progress End
 
     /* USER CODE END WHILE */
 
