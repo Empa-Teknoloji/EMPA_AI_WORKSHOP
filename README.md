@@ -912,7 +912,64 @@ uint8_t ism330_sensor_init(void);
 uint8_t ism330_sensor_process(imu_data *sensor_data);
 ```
 yukarıdaki kod satırları eklenir.
+Ardından 
+```c
+/* USER CODE BEGIN 4 */
 
+/* USER CODE END 4 */
+```
+arasına 
+```c
+uint8_t ism330_sensor_init(void) {
+	ism330_ctx.BusType = ISM330IS_I2C_BUS;
+	ism330_ctx.Address = ISM330IS_I2C_ADD_H;
+	ism330_ctx.Init = BSP_I2C1_Init;
+	ism330_ctx.DeInit = BSP_I2C1_DeInit;
+	ism330_ctx.ReadReg = BSP_I2C1_ReadReg;
+	ism330_ctx.WriteReg = BSP_I2C1_WriteReg;
+	ism330_ctx.GetTick = BSP_GetTick;
+
+	if (ISM330IS_RegisterBusIO(&ism330_obj_o, &ism330_ctx) != ISM330IS_OK)
+		return 1;
+
+	if (ISM330IS_ReadID(&ism330_obj_o, &ism330_id) != ISM330IS_OK)
+		return 1;
+
+	if (ism330_id != ISM330IS_ID)
+		return 1;
+
+	if (ISM330IS_Init(&ism330_obj_o) != ISM330IS_OK)
+		return 1;
+
+	if (ISM330IS_ACC_Enable(&ism330_obj_o) != ISM330IS_OK)
+		return 1;
+
+	if (ISM330IS_GYRO_Enable(&ism330_obj_o) != ISM330IS_OK)
+		return 1;
+
+	HAL_Delay(300);
+	return 0;
+}
+
+uint8_t ism330_sensor_process(imu_data *sensor_data) {
+	ISM330IS_Axes_t ism330_axes;
+	if (ISM330IS_ACC_GetAxes(&ism330_obj_o, &ism330_axes) == 0) {
+		sensor_data->acc.x = ism330_axes.x;
+		sensor_data->acc.y = ism330_axes.y;
+		sensor_data->acc.z = ism330_axes.z;
+	} else
+		return 1;
+
+	if (ISM330IS_GYRO_GetAxes(&ism330_obj_o, &ism330_axes) == 0) {
+		sensor_data->gyro.x = ism330_axes.x/100;
+		sensor_data->gyro.y = ism330_axes.y/100;
+		sensor_data->gyro.z = ism330_axes.z/100;
+	} else
+		return 1;
+	return 0;
+}
+```
+yukarıdaki fonksiyonlar eklenir.
 Ve 
 ```c
 	/* USER CODE BEGIN 2 */
